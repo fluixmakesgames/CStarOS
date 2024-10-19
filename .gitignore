@@ -1,5 +1,4 @@
-.exe
-.bin
+
 *.bin
 *.exe
 kernel.asm
