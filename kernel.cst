@@ -1,34 +1,56 @@
 asm org 0x1000
+jmp start
+
+
 func start:
-    call newcmd
-    call main
-   asm hlt
+    *test 'Bob'
+    *main
+    asm hlt
 
 func main:
-   asm mov ah, 0
-   asm int 0x16
-   asm mov ah, 0x0e
-   asm int 0x10
-jmp main
+    
+    ;*newcmd 
+    jmp main   
 end
+
 func newline:
-    asm mov  bx, 0007h  ; BH is DisplayPage, BL is GraphicsColor
-    asm mov  ax, 0E0Dh  ; AH is Teletype, AL is CarriageReturn
-    asm int  10h
-    asm mov  al, 0Ah    ; AL is Linefeed 
-    asm int  10h
-    asm mov  cx, 80     ; Length of the row (assuming screen is 80x25)
-    asm mov  bx, 0007h  ; BH is DisplayPage, BL is ColorAttribute
-    asm mov  ax, 0920h  ; AH is WriteCharacter, AL is SpaceCharacter
-    asm int  10h
+    asm mov bx, 0x0007  
+    asm mov ax, 0x0E0D  
+    asm int 0x10
+    asm mov al, 0x0A    
+    asm int 0x10
+    end
+end
+
+func scan:
+    asm mov ah, 0
+    asm int 0x16
+    end
+end
+
+func scanf:
+    *scan
+    cmp al, 0x0D     
+    je newcmd 
+    asm mov cl, al
+    asm mov ah, 0x0E  
+    asm int 0x10      
+    jmp scanf        
 end
 
 func newcmd:
-   call newline
-   asm mov ah, 0x0e
-   asm mov al, '>'
-   asm int 0x10
+    *newline
+    asm mov ah, 0x0E  
+    asm mov al, '>'  
+    asm int 0x10
+    *scanf       
 end
 
-asm times 512-($-$$) db 0
-dw 0xAA55
+func test > char arg:
+    asm mov ah, 0x0e
+    asm mov al, arg 
+    asm int 0x10
+end
+
+asm times 512 - ($ - $$) db 0 
+dw 0xAA55           

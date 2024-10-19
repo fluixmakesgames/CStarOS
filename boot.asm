@@ -52,7 +52,7 @@ print_string:
 .done:
     ret
 
-msg_loading db 'Loading kernel...', 0
+msg_loading db 'Loading kernel... ', 0
 msg_disk_error db 'Disk read error!', 0
 
 times 510-($-$$) db 0  ; Pad the rest of the bootloader to 510 bytes
